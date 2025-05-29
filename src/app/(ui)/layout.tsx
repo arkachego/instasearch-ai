@@ -5,12 +5,15 @@ import { LayoutProps } from "@/props/LayoutProps";
 
 // Stores
 import { GlobalProvider } from "@/stores/GlobalStore";
+import { QueryProvider } from "@/stores/QueryStore";
 
 const UILayout: React.FC<LayoutProps> = ({ children }) => {
 
   return (
     <GlobalProvider>
-      {children}
+      <QueryProvider>
+        {children}
+      </QueryProvider>
     </GlobalProvider>
   );
 
