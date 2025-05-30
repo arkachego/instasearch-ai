@@ -11,10 +11,23 @@ import FilterSection from "@/components/sections/FilterSection";
 import { useGlobals } from "@/hooks/useGlobals";
 import { useQuery } from "@/hooks/useQuery";
 
+// Services
+import { fetchProducts } from "@/services/SearchService";
+
 const SearchPage: React.FC = () => {
 
   const { theme, toggleTheme, filter, toggleFilter } = useGlobals();
-  const { keyword, setKeyword, category, setCategory } = useQuery();
+  const { keyword, setKeyword, category, setCategory, filters, setProducts } = useQuery();
+
+  const updateProducts = async () => {
+    try {
+      const allProducts: any[] = await fetchProducts(keyword, category, filters);
+      setProducts(allProducts);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="w-full h-full bg-white dark:bg-neutral-700">
@@ -39,7 +52,9 @@ const SearchPage: React.FC = () => {
         </Button>
       </div>
       <div className="flex w-full h-[calc(100vh-69px)]">
-        <FilterSection/>
+        <FilterSection
+          onSubmit={updateProducts}
+        />
         <div className="p-8 flex-1">Search Results</div>
       </div>
     </div>

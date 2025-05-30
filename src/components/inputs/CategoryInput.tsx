@@ -16,18 +16,20 @@ import { CategoryProps } from "@/props/CategoryProps";
 // Types
 import { CategoryType } from "@/types/CategoryType";
 
+// Services
+import { fetchCategories } from "@/services/SearchService";
+
 const CategoryInput: React.FC<CategoryProps> = ({ category, setCategory }) => {
 
   const [ categories, setCategories ] = useState<CategoryType[]>([]);
 
   useEffect(() => {
-    fetchCategories();
+    updateCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  const updateCategories = async () => {
     try {
-      const response = await fetch('http://localhost:3000/api/category');
-      const allCategories: CategoryType[] = await response.json();
+      const allCategories: CategoryType[] = await fetchCategories();
       setCategories(allCategories);
       if (!category) {
         setCategory(allCategories[0].slug);

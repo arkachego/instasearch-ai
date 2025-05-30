@@ -10,14 +10,12 @@ export async function GET(request: Request) {
     const keyword = searchParams.get('q') || '';
     const category = searchParams.get('category') || '';
     const filters = JSON.parse(searchParams.get('filters') || '{}');
-
-    console.log('Keyword:', keyword);
-    console.log('Category:', category);
-    console.log('Filters:', filters);
-
+    
+    const { price, location, ...attributes } = filters;
     await connect();
 
     let pipeline: any[] = [];
+
     if (keyword) {
       pipeline = pipeline.concat([
         {
@@ -31,6 +29,16 @@ export async function GET(request: Request) {
           }
         },
       ]);
+    }
+    const firstConditions: any[] = [
+      { $eq: [ "$category.slug", category ] },
+      { $gte: [ "$price", price[0] ] },
+      { $lte: [ "$price", price[1] ] },
+    ];
+    if (location) {
+      firstConditions.push({
+        $in: [ "$location", location ]
+      });
     }
     pipeline = pipeline.concat([
       {
@@ -47,31 +55,37 @@ export async function GET(request: Request) {
       {
         $match: {
           $expr: {
-            $and: [
-              { $eq: [ "$category.slug", category ] },
-            ],
+            $and: firstConditions,
           },
         },
       },
     ]);
-    // if (Object.keys(filters).length > 0) {
-    //   const conditions: any = {};
-      
-    //   pipeline = pipeline.concat([
-    //     {
-    //       $match: conditions,
-    //     },
-    //   ]);
-    // }
+    const secondConditions: any = Object.entries(attributes).map(([key, values]) => ({
+      attributes: {
+        $elemMatch: {
+          key,
+          value: { $in: values },
+        },
+      },
+    }));
+    if (secondConditions.length) {
+      pipeline = pipeline.concat([
+        {
+          $match: {
+            $and: secondConditions,
+          },
+        },
+      ]);
+    }
     pipeline = pipeline.concat([
       {
         $project: {
+          category: 0,
           categoryId: 0,
           __v: 0,
         },
       },
     ]);
-    console.log(pipeline);
     const listings = await Listing.aggregate(pipeline);
 
     return new Response(JSON.stringify(listings), {
