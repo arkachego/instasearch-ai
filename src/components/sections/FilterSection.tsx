@@ -1,11 +1,20 @@
-import { useGlobals } from "@/hooks/useGlobals";
-import { useQuery } from "@/hooks/useQuery";
-import { FilterType } from "@/types/FilterType";
-import { useEffect, useState } from "react";
+// Libraries
+import { useEffect } from "react";
+
+// Components
+import { Button } from "@/components/ui/button";
 import SliderInput from "@/components/inputs/SliderInput";
 import CheckInput from "@/components/inputs/CheckInput";
-import { Button } from "@/components/ui/button";
+
+// Services
 import { fetchFilters, fetchProducts } from "@/services/SearchService";
+
+// Hooks
+import { useGlobals } from "@/hooks/useGlobals";
+import { useQuery } from "@/hooks/useQuery";
+
+// Types
+import { FilterType } from "@/types/FilterType";
 
 type Props = {
   onSubmit: () => void;
@@ -14,31 +23,7 @@ type Props = {
 const FilterSection: React.FC<Props> = ({ onSubmit }) => {
 
   const { filter } = useGlobals();
-  const { keyword, category, filters, setFilters, setProducts } = useQuery();
-  const [ launched, setLaunched ] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (category) {
-      updateFilters();
-    }
-  }, [ category ]);
-
-  useEffect(() => {
-    if (!launched && filters.length) {
-      updateProducts();
-      setLaunched(true);
-    }
-  }, [ filters, launched ]);
-  
-  const updateFilters = async () => {
-    try {
-      const allFilters: FilterType[] = await fetchFilters(category);
-      setFilters(allFilters);
-    }
-    catch (error) {
-      console.error(error);
-    }
-  };
+  const { filters, setFilters } = useQuery();
 
   const updateFilter = (newFilter: FilterType) => {
     const newFilters = [ ...filters ];
@@ -47,23 +32,13 @@ const FilterSection: React.FC<Props> = ({ onSubmit }) => {
     setFilters(newFilters);
   };
 
-  const updateProducts = async () => {
-    try {
-      const allProducts: any[] = await fetchProducts(keyword, category, filters);
-      setProducts(allProducts);
-    }
-    catch (error) {
-      console.error(error);
-    }
-  };
-
   return filter ? (
-    <div className="w-[300px] border-r border-r-neutral-300 dark:border-r-neutral-500">
+    <div className="w-[227px] border-r border-r-neutral-300 dark:border-r-neutral-500">
       <div className="flex justify-between px-4 pt-4">
         <Button onClick={() => onSubmit()}>
           Reset
         </Button>
-        <Button onClick={() => onSubmit()}>
+        <Button onClick={onSubmit}>
           Search
         </Button>
       </div>

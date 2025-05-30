@@ -12,10 +12,26 @@ import SearchInput from "@/components/inputs/SearchInput";
 import { useGlobals } from "@/hooks/useGlobals";
 import { useQuery } from "@/hooks/useQuery";
 
-const HeaderSection: React.FC = () => {
+type Props = {
+  onSubmit: () => Promise<void>;
+};
 
-  const { theme, toggleTheme, filter, toggleFilter } = useGlobals();
-  const { keyword, setKeyword, category, setCategory } = useQuery();
+const HeaderSection: React.FC<Props> = ({ onSubmit }) => {
+
+  const {
+    theme,
+    toggleTheme,
+    filter,
+    toggleFilter,
+  } = useGlobals();
+  const {
+    keyword,
+    setKeyword,
+    category,
+    setCategory,
+    filters,
+    setProducts,
+  } = useQuery();
 
   return (
     <div className="flex justify-between items-center gap-4 p-4 border-b border-b-neutral-300 dark:border-b-neutral-500">
@@ -31,6 +47,7 @@ const HeaderSection: React.FC = () => {
           <SearchInput
             keyword={keyword}
             setKeyword={setKeyword}
+            onSubmit={onSubmit}
           />
         </div>
       </div>

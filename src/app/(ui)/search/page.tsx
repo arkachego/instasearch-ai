@@ -1,5 +1,8 @@
 'use client';
 
+// Libraries
+import { useEffect, useState } from "react";
+
 // Sections
 import HeaderSection from "@/components/sections/HeaderSection";
 import FilterSection from "@/components/sections/FilterSection";
@@ -9,11 +12,38 @@ import ContentSection from "@/components/sections/ContentSection";
 import { useQuery } from "@/hooks/useQuery";
 
 // Services
-import { fetchProducts } from "@/services/SearchService";
+import { fetchFilters, fetchProducts } from "@/services/SearchService";
+
+// Types
+import { FilterType } from "@/types/FilterType";
 
 const SearchPage: React.FC = () => {
 
-  const { keyword, category, filters, setProducts } = useQuery();
+  const [ launched, setLaunched ] = useState<boolean>(false);
+  const { keyword, category, filters, setFilters, setProducts } = useQuery();
+
+  useEffect(() => {
+    if (category) {
+      updateFilters();
+    }
+  }, [ category ]);
+
+  useEffect(() => {
+    if (!launched && filters.length) {
+      updateProducts();
+      setLaunched(true);
+    }
+  }, [ launched, filters ])
+  
+  const updateFilters = async () => {
+    try {
+      const allFilters: FilterType[] = await fetchFilters(category);
+      setFilters(allFilters);
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
 
   const updateProducts = async () => {
     try {
@@ -27,7 +57,9 @@ const SearchPage: React.FC = () => {
 
   return (
     <div className="w-full h-full bg-white dark:bg-neutral-700">
-      <HeaderSection/>
+      <HeaderSection
+        onSubmit={updateProducts}
+      />
       <div className="flex w-full h-[calc(100vh-69px)]">
         <FilterSection
           onSubmit={updateProducts}
