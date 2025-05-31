@@ -16,29 +16,28 @@ import { fetchFilters, fetchProducts } from "@/services/SearchService";
 
 // Types
 import { FilterType } from "@/types/FilterType";
+import { ProductType } from "@/types/ProductType";
 
 const SearchPage: React.FC = () => {
 
-  const [ launched, setLaunched ] = useState<boolean>(false);
-  const { keyword, category, filters, setFilters, setProducts } = useQuery();
+  const [ loading, setLoading ] = useState<boolean>(false);
+  const { category, keyword, setKeyword, filters, setFilters, setProducts } = useQuery();
 
+  // Loading for the first time.
   useEffect(() => {
     if (category) {
-      updateFilters();
+      onCategoryChange();
     }
   }, [ category ]);
 
-  useEffect(() => {
-    if (!launched && filters.length) {
-      updateProducts();
-      setLaunched(true);
-    }
-  }, [ launched, filters ])
-  
-  const updateFilters = async () => {
+  const onCategoryChange = async () => {
     try {
+      setKeyword('');
+      setFilters([]);
       const allFilters: FilterType[] = await fetchFilters(category);
+      const allProducts: ProductType[] = await fetchProducts(keyword, category, allFilters);
       setFilters(allFilters);
+      setProducts(allProducts);
     }
     catch (error) {
       console.error(error);

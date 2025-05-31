@@ -17,45 +17,18 @@ import { ProductType } from "@/types/ProductType";
 
 const ContentSection: React.FC = () => {
 
-  const { products, category } = useQuery();
-  const [ imageUrls, setImageUrls ] = useState<string[]>([]);
-
-  useEffect(() => {
-    setImageUrls(category === "televisions" ? [
-      "http://localhost:3000/televisions/image1.avif",
-      "http://localhost:3000/televisions/image2.jpg",
-      "http://localhost:3000/televisions/image3.webp",
-      "http://localhost:3000/televisions/image4.jpg",
-      "http://localhost:3000/televisions/image5.avif",
-      "http://localhost:3000/televisions/image6.jpg",
-      "http://localhost:3000/televisions/image7.webp",
-      "http://localhost:3000/televisions/image8.webp",
-      "http://localhost:3000/televisions/image9.jpg",
-      "http://localhost:3000/televisions/image10.jpg",
-    ] : [
-      "http://localhost:3000/televisions/image1.avif",
-      "http://localhost:3000/televisions/image2.jpg",
-      "http://localhost:3000/televisions/image3.webp",
-      "http://localhost:3000/televisions/image4.jpg",
-      "http://localhost:3000/televisions/image5.avif",
-      "http://localhost:3000/televisions/image6.jpg",
-      "http://localhost:3000/televisions/image7.webp",
-      "http://localhost:3000/televisions/image8.webp",
-      "http://localhost:3000/televisions/image9.jpg",
-      "http://localhost:3000/televisions/image10.jpg",
-    ]);
-  }, [ category ]);
+  const { products } = useQuery();
 
   return (
-    <ScrollArea className="p-4 h-[calc(100vh-69px)] flex-1">
-      <Grid className="max-w-6xl mx-auto">
+    <ScrollArea className="h-[calc(100vh-69px)] flex-1">
+      <Grid className="m-4 max-w-6xl mx-auto">
         {products.map((product: ProductType) => (
           <GridItem
             key={product._id}
             header={(
               <img
                 className="w-full h-[182px] object-cover"
-                src={imageUrls[Math.floor(Math.random() * imageUrls.length)]}
+                src={product.thumbnail}
               />
             )}
             icon={(

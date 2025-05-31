@@ -10,6 +10,7 @@ export interface ListingDocument extends Document {
   description: string;
   price: number;
   location: string;
+  thumbnail: string;
   categoryId: Types.ObjectId;
   attributes: AttributeDocument[];
 }
@@ -24,6 +25,7 @@ const ListingSchema = new Schema<ListingDocument>({
   description: { type: String },
   price: { type: Number, required: true },
   location: { type: String, required: true },
+  thumbnail: { type: String, required: true },
   categoryId: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
   attributes: { type: [ AttributeSchema ], default: [] },
 });

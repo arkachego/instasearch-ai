@@ -41,6 +41,18 @@ const seed = async () => {
   const tvTypes = [ "LCD", "LED", "QLED", "OLED" ];
   const tvScreens = [ 32, 40, 43, 50, 55, 60, 65, 70, 75, 80 ];
   const resolutions = ["HD Ready", "Full HD", "4K UHD"];
+  const tvImages = [
+    "http://localhost:3000/televisions/image1.avif",
+    "http://localhost:3000/televisions/image2.jpg",
+    "http://localhost:3000/televisions/image3.webp",
+    "http://localhost:3000/televisions/image4.jpg",
+    "http://localhost:3000/televisions/image5.avif",
+    "http://localhost:3000/televisions/image6.jpg",
+    "http://localhost:3000/televisions/image7.webp",
+    "http://localhost:3000/televisions/image8.webp",
+    "http://localhost:3000/televisions/image9.jpg",
+    "http://localhost:3000/televisions/image10.jpg",
+  ];
   for (let i = 0; i < 1000; i++) {
     const attributes = {
       brand: tvBrands[getRandomInt(tvBrands.length)],
@@ -53,6 +65,7 @@ const seed = async () => {
       description: "A great smart television for your living room.",
       price: getRandomInt(800000, 50000),
       location: locations[i % locations.length],
+      thumbnail: tvImages[Math.floor(Math.random() * tvImages.length)],
       categoryId: tvCategory._id as Types.ObjectId,
       attributes: Object.keys(attributes).map((key: string) => {
         return { key, value: attributes[key] as any };
@@ -64,6 +77,18 @@ const seed = async () => {
   const shoeSizes = [ 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ];
   const genders = ["Men", "Women"];
   const colors = ["Black", "White", "Red", "Blue", "Gray", "Green", "Orange", "Yellow"];
+  const shoeImages = [
+    "http://localhost:3000/running-shoes/image1.jpg",
+    "http://localhost:3000/running-shoes/image2.webp",
+    "http://localhost:3000/running-shoes/image3.jpg",
+    "http://localhost:3000/running-shoes/image4.webp",
+    "http://localhost:3000/running-shoes/image5.jpg",
+    "http://localhost:3000/running-shoes/image6.webp",
+    "http://localhost:3000/running-shoes/image7.webp",
+    "http://localhost:3000/running-shoes/image8.jpg",
+    "http://localhost:3000/running-shoes/image9.webp",
+    "http://localhost:3000/televisions/image10.jpg",
+  ];
   for (let i = 0; i < 1000; i++) {
     const attributes = {
       brand: shoeBrands[getRandomInt(shoeBrands.length)],
@@ -76,6 +101,7 @@ const seed = async () => {
       description: "Comfortable and stylish running shoes.",
       price: getRandomInt(10000, 1000),
       location: locations[i % locations.length],
+      thumbnail: shoeImages[Math.floor(Math.random() * shoeImages.length)],
       categoryId: shoeCategory._id as Types.ObjectId,
       attributes: Object.keys(attributes).map((key: string) => {
         return { key, value: attributes[key] as any };

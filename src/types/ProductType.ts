@@ -5,6 +5,7 @@ export type ProductType = {
   title: string;
   description: string;
   location: string;
+  thumbnail: string;
   price: number;
   attributes: AttributeType[];
 };
