@@ -68,6 +68,7 @@ const SearchPage: React.FC = () => {
   };
 
   const onFilterChange = async () => {
+    setLoading(true);
     setPage(1);
 
     const totalCount = await fetchCount(keyword, category, filters);
@@ -75,9 +76,11 @@ const SearchPage: React.FC = () => {
 
     setCount(totalCount as number);
     setProducts(allProducts);
+    setLoading(false);
   };
 
   const onFilterReset = async () => {
+    setLoading(true);
     const newFilters: FilterType[] = filters.map((item: FilterType) => {
       item.value = (item.type === "slider") ? [ item.minimum, item.maximum ] as number[] : [];
       return item;
@@ -92,21 +95,26 @@ const SearchPage: React.FC = () => {
 
     setCount(totalCount as number);
     setProducts(allProducts);
+    setLoading(false);
   };
 
   const onPageChange = async (newPage: number) => {
+    setLoading(true);
     setPage(newPage);
 
     const allProducts: ProductType[] = await fetchProducts(keyword, category, filters, newPage, item);
     setProducts(allProducts);
+    setLoading(false);
   };
 
   const onItemChange = async (newItem: number) => {
+    setLoading(true);
     setPage(1);
     setItem(newItem);
 
     const allProducts: ProductType[] = await fetchProducts(keyword, category, filters, 1, newItem);
     setProducts(allProducts);
+    setLoading(false);
   };
 
   const onThemeChange = () => {
