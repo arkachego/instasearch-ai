@@ -43,16 +43,19 @@ const CategoryInput: React.FC<CategoryProps> = ({ category, setCategory }) => {
   };
 
   return (
-    <Select value={category} onValueChange={setCategory}>
-      <SelectTrigger className="w-[150px] bg-neutral-300 dark:bg-neutral-600">
-        <SelectValue placeholder="Category" />
-      </SelectTrigger>
-      <SelectContent>
-        {categories.map((c: CategoryType) => (
-          <SelectItem key={c.slug} value={c.slug}>{c.name}</SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+    <div>
+      <div className="text-lg font-bold mb-3">Category</div>
+      <Select value={category} onValueChange={setCategory}>
+        <SelectTrigger className="w-full bg-neutral-300 dark:bg-neutral-600">
+          <SelectValue placeholder="Category" />
+        </SelectTrigger>
+        <SelectContent>
+          {categories.map((c: CategoryType) => (
+            <SelectItem key={c.slug} value={c.slug}>{c.name}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
   );
 
 };

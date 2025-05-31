@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { IconSearch } from "@tabler/icons-react";
+import { IconKeyboard, IconSearch } from "@tabler/icons-react";
 
 // Components
 import { Input } from "@/components/ui/input";
@@ -22,16 +22,16 @@ const SearchInput: React.FC<InputProps> = ({ keyword, setKeyword, onSubmit }) =>
   };
 
   return (
-    <div className="relative w-full max-w-xs">
+    <div className="relative w-[280px] max-w-xs">
       <Input
         type="text"
         placeholder="Search Products..."
-        className="bg-neutral-300 dark:bg-neutral-600"
+        className="w-full bg-neutral-300 dark:bg-neutral-600"
         value={keyword}
         onChange={(event: any) => setKeyword(event.target.value)}
         onKeyDown={onKeyDown}
       />
-      <IconSearch className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
+      <IconKeyboard className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 h-5 w-5" />
     </div>
   );
 

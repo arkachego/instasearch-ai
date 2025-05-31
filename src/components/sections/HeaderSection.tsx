@@ -1,7 +1,7 @@
 'use client';
 
 // Libraries
-import { IconMoon, IconSun, IconFilterOff, IconFilter } from "@tabler/icons-react";
+import { IconMoon, IconSun, IconFilterOff, IconFilter, IconRefresh, IconSearch } from "@tabler/icons-react";
 
 // Components
 import { Button } from "@/components/ui/button";
@@ -14,9 +14,10 @@ import { useQuery } from "@/hooks/useQuery";
 
 type Props = {
   onFilter: () => Promise<void>;
+  onReset: () => Promise<void>;
 };
 
-const HeaderSection: React.FC<Props> = ({ onFilter }) => {
+const HeaderSection: React.FC<Props> = ({ onFilter, onReset }) => {
 
   const {
     theme,
@@ -33,25 +34,28 @@ const HeaderSection: React.FC<Props> = ({ onFilter }) => {
 
   return (
     <div className="flex justify-between items-center gap-4 p-4 border-b border-b-neutral-300 dark:border-b-neutral-500">
-      <div className="flex-1">
-        <div className="flex gap-4">
-          <Button size="icon" onClick={toggleFilter}>
-            {filter ? <IconFilterOff/> : <IconFilter/>}
-          </Button>
-          <CategoryInput
-            category={category}
-            setCategory={setCategory}
-          />
-          <SearchInput
-            keyword={keyword}
-            setKeyword={setKeyword}
-            onSubmit={onFilter}
-          />
-        </div>
+      <div className="flex gap-4">
+        <Button className="w-[36px]" size="icon" onClick={toggleFilter}>
+          {filter ? <IconFilterOff/> : <IconFilter/>}
+        </Button>
+        <SearchInput
+          keyword={keyword}
+          setKeyword={setKeyword}
+          onSubmit={onFilter}
+        />
+        <Button onClick={onFilter}>
+          <IconSearch/>
+          Search
+        </Button>
       </div>
-      <Button size="icon" onClick={toggleTheme}>
-        {theme === "dark" ? <IconSun/> : <IconMoon/>}
-      </Button>
+      <div className="flex gap-4">
+        <Button variant="secondary" className="w-[36px]" onClick={onReset}>
+          <IconRefresh/>
+        </Button>
+        <Button size="icon" onClick={toggleTheme}>
+          {theme === "dark" ? <IconSun/> : <IconMoon/>}
+        </Button>
+      </div>
     </div>
   );
 

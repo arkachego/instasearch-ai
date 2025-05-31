@@ -1,5 +1,7 @@
 // Components
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import CategoryInput from "@/components/inputs/CategoryInput";
 import SliderInput from "@/components/inputs/SliderInput";
 import CheckInput from "@/components/inputs/CheckInput";
 
@@ -10,15 +12,10 @@ import { useQuery } from "@/hooks/useQuery";
 // Types
 import { FilterType } from "@/types/FilterType";
 
-type Props = {
-  onFilter: () => void;
-  onReset: () => void;
-};
-
-const FilterSection: React.FC<Props> = ({ onFilter, onReset }) => {
+const FilterSection: React.FC = () => {
 
   const { filter } = useGlobals();
-  const { filters, setFilters } = useQuery();
+  const { category, setCategory, filters, setFilters } = useQuery();
 
   const updateFilter = (newFilter: FilterType) => {
     const newFilters = [ ...filters ];
@@ -28,18 +25,14 @@ const FilterSection: React.FC<Props> = ({ onFilter, onReset }) => {
   };
 
   return filter ? (
-    <div className="w-[227px] border-r border-r-neutral-300 dark:border-r-neutral-500">
-      <div className="flex justify-between gap-4 px-4 pt-4">
-        <Button variant="outline" className="flex-1" onClick={onReset}>
-          Reset
-        </Button>
-        <Button className="flex-1" onClick={onFilter}>
-          Search
-        </Button>
-      </div>
+    <ScrollArea className="w-[300px] h-[calc(100vh-69px)] border-r border-r-neutral-300 dark:border-r-neutral-500">
       <div
         className="flex flex-col gap-6 px-8 pt-4 pb-8"
       >
+        <CategoryInput
+          category={category}
+          setCategory={setCategory}
+        />
         {filters.map((item: FilterType) => {
           if (item.type === "slider") {
             return (
@@ -61,7 +54,7 @@ const FilterSection: React.FC<Props> = ({ onFilter, onReset }) => {
           }
         })}
       </div>
-    </div>
+    </ScrollArea>
   ) : null;
 
 };

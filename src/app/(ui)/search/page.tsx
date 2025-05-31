@@ -27,7 +27,6 @@ const SearchPage: React.FC = () => {
     setKeyword,
     filters,
     setFilters,
-    count,
     setCount,
     page,
     setPage,
@@ -73,9 +72,10 @@ const SearchPage: React.FC = () => {
     });
     setKeyword('');
     setFilters(newFilters);
+    setPage(1);
 
     const totalCount = await fetchCount(keyword, category, filters);
-    const allProducts: ProductType[] = await fetchProducts(keyword, category, newFilters, page, item);
+    const allProducts: ProductType[] = await fetchProducts('', category, newFilters, 1, item);
 
     setCount(totalCount as number);
     setProducts(allProducts);
@@ -100,12 +100,10 @@ const SearchPage: React.FC = () => {
     <div className="w-full h-full bg-white dark:bg-neutral-700">
       <HeaderSection
         onFilter={onFilterChange}
+        onReset={onFilterReset}
       />
       <div className="flex w-full h-[calc(100vh-69px)]">
-        <FilterSection
-          onFilter={onFilterChange}
-          onReset={onFilterReset}
-        />
+        <FilterSection/>
         <ContentSection
           onPage={onPageChange}
           onItem={onItemChange}
