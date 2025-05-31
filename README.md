@@ -56,15 +56,14 @@ npm run db:down
 
 I shall be using **Anthropic's Claude 3 Sonnet Generative AI** model behind analysing the search string provided by the users. As I shall be deploying this app in **AWS Amplify**, connecting with the **Amazon Bedrock Client Runtime** will be fairly easy using the [@aws-sdk/client-bedrock-runtime](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-bedrock-runtime/) package.
 
-The most important part is to develop the prompt for the model. Before starting the development of the coding assignment, I was exploring the possibilities embedding the aforementioned Generative AI model into the application stack. I was using Amazon Bedrock Single Prompt window to test the same with the following parameters:
+The most important part is to develop the prompt for the model. Before starting the development of the coding assignment, I was exploring the possibilities embedding the aforementioned **Generative AI** model into the application stack. I was using **Amazon Bedrock Single Prompt** window to test the same with the following parameters:
 
 ##### System Prompts
 
 ```
 You are a MongoDB query generator. Your only task is to extract search filters and category from a user’s natural language query and return a JSON object in the format below.
 
-Format:
-{
+Format: {
   "category": "string",
   "filters": {
     "price": {
@@ -104,4 +103,34 @@ Listing: {
 
 Never provide any explanations, markdown, or repeated text. Only return the raw JSON object.
 
+```
+
+##### Temperature
+
+```
+0.1
+```
+
+##### Top P
+
+```
+0.9
+```
+
+##### Top K
+
+```
+250
+```
+
+##### Maximum Length
+
+```
+500
+```
+
+##### Stop Sequences
+
+```
+}
 ```
