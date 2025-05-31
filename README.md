@@ -105,32 +105,107 @@ Never provide any explanations, markdown, or repeated text. Only return the raw 
 
 ```
 
-##### Temperature
+##### Other Parameters
 
-```
-0.1
+
+| Parameter      | Value |
+| -------------- | ----- |
+| Temperature    | `0.1` |
+| Top P          | `0.9` |
+| Top K          | `250` |
+| Maximum Length | `500` |
+| Stop Sequences | `}`   |
+
+#### Answer (1.b)
+
+When the system cannot confidently classify part of the query (e.g. ambiguous attribute or missing value), I implement a fallback that:
+- Returns a partial filter with only the confidently extracted fields.
+- Flags uncertain parts in a `missing` or `ambiguous` array in the response.
+- Prompts the user for clarification via the UI (“Did you mean...?”) or suggests some popular filters.
+- Logs ambiguous queries for continuous improvement and prompt tuning.
+
+This ensures graceful degradation and a feedback loop for improving intent extraction.
+
+#### Answer (2.a)
+
+I would adopt a **document-oriented (NoSQL, e.g., MongoDB)** model with a flexible `attributes` array for category-specific fields. Each listing stores its custom attributes as key-value pairs, e.g.:
+
+```js
+attributes: [
+  { key: "Size", value: 9 },
+  { key: "Color", value: "Red" },
+  { key: "Energy Rating", value: "5 Star" }
+]
 ```
 
-##### Top P
+This approach allows merchandisers to add new attributes (like "Energy Rating" for ACs) without schema migrations or downtime. The `attributeSchema` in the Category model defines which attributes are valid for each category, supporting validation and UI generation.
 
-```
-0.9
+#### Answer (2.b)
+
+This document model supports fast multi-attribute filtering and existence queries by:
+- Creating **compound indexes** on `attributes.key` and `attributes.value` for commonly filtered attributes.
+- Using MongoDB’s `$elemMatch` and `$exists` operators to efficiently filter listings with specific attribute values or check for the presence of an attribute.
+- Avoiding costly joins or schema changes, enabling rapid iteration and scalability as new attributes are introduced.
+
+#### Answer (3.a) (Optional)
+
+**Dynamic Facet API Contract Example:**
+
+```http
+GET /api/search/facets?category=shoes&filters[price][$lt]=2000&filters[color]=red
 ```
 
-##### Top K
-
-```
-250
-```
-
-##### Maximum Length
-
-```
-500
-```
-
-##### Stop Sequences
-
-```
+**Response:**
+```json
+{
+  "facets": [
+    {
+      "key": "brand",
+      "label": "Brand",
+      "type": "string",
+      "options": [
+        { "value": "Nike", "count": 12 },
+        { "value": "Adidas", "count": 8 }
+      ]
+    },
+    {
+      "key": "size",
+      "label": "Size",
+      "type": "number",
+      "options": [
+        { "value": 8, "count": 5 },
+        { "value": 9, "count": 7 }
+      ]
+    },
+    {
+      "key": "color",
+      "label": "Color",
+      "type": "string",
+      "options": [
+        { "value": "Red", "count": 3 },
+        { "value": "Blue", "count": 6 }
+      ]
+    }
+  ]
 }
 ```
+
+This contract allows the frontend to dynamically render available filters (facets) and their counts after any search, supporting a responsive and faceted search experience.
+
+### API Documentation
+
+1. `GET /categories`:
+
+Retrieves the product categories stored in the database.
+
+2. `GET /filters?category=<CATEGORY_SLUG>`:
+
+Filter options are being returned based on the provided category.
+
+3. `GET /count?q=<SEARCH_STRING>&category=<CATEGORY_SLUG>&filters=<STRINGIFIED_JSON>`:
+
+Total count of the matched documents for the supplied category, filters and the query string are returned.
+
+4. `GET /search?q=<SEARCH_STRING>&category=<CATEGORY_SLUG>&filters=<STRINGIFIED_JSON>&page=<PAGE_NUMBER>&item=<ITEMS_COUNT>`:
+
+This API returns the filtered products for the supplied criteria. It also includes pagination and by default the first 20 matched items are being returned if the `page` and `item` attributes are not provided.
