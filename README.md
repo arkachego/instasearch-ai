@@ -1,6 +1,6 @@
 # InstaSearch AI
 
-This Next.js module is the deliverable of the assignment provided by Instinctive Studio for the Full Stack MERN Developer role.
+This [Next.js](https://nextjs.org/) module is the deliverable of the assignment provided by [Instinctive Studio](https://www.instinctive.studio/) for their **Full Stack MERN Developer** role. The answers for the descriptive questions are at the bottom of this documentation.
 
 ### Configuration Steps
 
@@ -49,3 +49,9 @@ npm run dev
 ```
 npm run db:down
 ```
+
+### Descriptive Answers
+
+Answer (1.a)
+
+I shall be using **Anthropic's Claude 3 Sonnet Generative AI** model behind analysing the search string provided by the users. As I shall be deploying this app in **AWS Amplify**, connecting with the **Amazon Bedrock Client Runtime** will be fairly easy using the [@aws-sdk/client-bedrock-runtime](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/Package/-aws-sdk-client-bedrock-runtime/) package.
