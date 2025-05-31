@@ -2,6 +2,15 @@
 
 This [Next.js](https://nextjs.org/) module is the deliverable of the assignment provided by [Instinctive Studio](https://www.instinctive.studio/) for their **Full Stack MERN Developer** role. The answers for the descriptive questions are at the bottom of this documentation.
 
+## Web View
+
+![Alt text](public/web-screen.png)
+
+## Mobile View
+
+![Alt text](public/mobile-screen-1.png)
+![Alt text](public/mobile-screen-2.png)
+
 ### Configuration Steps
 
 1. Clone the repository.
@@ -22,7 +31,7 @@ cd instasearch-ai
 npm install
 ```
 
-4. Launch the MongoDB docker container.
+4. Launch the **MongoDB** docker container.
 
 ```
 npm run db:up
@@ -42,9 +51,9 @@ npm run db:seed
 npm run dev
 ```
 
-7. Press `Ctrl/Cmd + X` to stop the module.
+7. App should be running at [https://localhost:3000](https://localhost:3000). Press `Ctrl/Cmd + X` to stop the module.
 
-8. Stop the MongoDB docker container.
+8. Stop the **MongoDB** docker container.
 
 ```
 npm run db:down
