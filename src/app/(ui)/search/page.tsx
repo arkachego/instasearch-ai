@@ -28,7 +28,7 @@ import { ProductType } from "@/types/ProductType";
 const SearchPage: React.FC = () => {
 
   const { theme, toggleTheme } = useGlobals();
-  const [ loading, setLoading ] = useState<boolean>(false);
+  const { setLoading } = useQuery();
   const [ opened, setOpened ] = useState<boolean>(false);
 
   const {
@@ -52,6 +52,7 @@ const SearchPage: React.FC = () => {
   }, [ category ]);
 
   const onCategoryChange = async () => {
+    setLoading(true);
     setKeyword('');
     setFilters([]);
     setPage(1);
@@ -63,6 +64,7 @@ const SearchPage: React.FC = () => {
     setFilters(allFilters);
     setCount(totalCount as number);
     setProducts(allProducts);
+    setLoading(false);
   };
 
   const onFilterChange = async () => {

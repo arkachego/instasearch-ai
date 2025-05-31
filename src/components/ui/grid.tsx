@@ -10,7 +10,7 @@ export const Grid = ({
   return (
     <div
       className={cn(
-        "mx-auto grid max-w-7xl grid-cols-1 gap-4 md:auto-rows-[22rem] md:grid-cols-3 cursor-pointer",
+        "mx-auto grid max-w-7xl grid-cols-1 gap-4 md:auto-rows-[350px] md:grid-cols-3 cursor-pointer",
         className,
       )}
     >
@@ -42,7 +42,7 @@ export const GridItem = ({
       {header}
       <div className="transition duration-200 group-hover/grid:translate-x-2">
         {icon}
-        <div className="mt-2 mb-2 font-sans font-bold text-neutral-600 dark:text-neutral-200">
+        <div className="my-2 font-sans font-bold text-neutral-600 dark:text-neutral-200">
           {title}
         </div>
         <div className="font-sans text-xs font-normal text-neutral-600 dark:text-neutral-300">

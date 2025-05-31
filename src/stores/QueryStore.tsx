@@ -9,7 +9,8 @@ import { FilterType } from "@/types/FilterType";
 import { ProductType } from "@/types/ProductType";
 
 type QueryStoreType = {
-  resetState: () => void;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
   keyword: string;
   setKeyword: (keyword: string) => void;
   category: string;
@@ -27,7 +28,8 @@ type QueryStoreType = {
 };
 
 export const QueryStore = createContext<QueryStoreType>({
-  resetState: () => {},
+  loading: false,
+  setLoading: () => {},
   keyword: '',
   setKeyword: () => {},
   category: '',
@@ -46,6 +48,7 @@ export const QueryStore = createContext<QueryStoreType>({
 
 export const QueryProvider: React.FC<LayoutProps> = ({ children }) => {
 
+  const [ loading, setLoading ] = useState<boolean>(false);
   const [ keyword, setKeyword ] = useState<string>('');
   const [ category, setCategory ] = useState<string>('');
   const [ filters, setFilters ] = useState<FilterType[]>([]);
@@ -54,16 +57,9 @@ export const QueryProvider: React.FC<LayoutProps> = ({ children }) => {
   const [ item, setItem ] = useState<number>(20);
   const [ products, setProducts ] = useState<ProductType[]>([]);
 
-  const resetState = () => {
-    setKeyword('');
-    setCategory('');
-    setFilters([]);
-    setCount(0);
-    setProducts([]);
-  };
-
   const value: QueryStoreType = {
-    resetState,
+    loading,
+    setLoading,
     keyword,
     setKeyword,
     category,
