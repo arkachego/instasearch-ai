@@ -15,6 +15,7 @@ import { useQuery } from "@/hooks/useQuery";
 
 // Types
 import { FilterType } from "@/types/FilterType";
+import { ProductType } from "@/types/ProductType";
 
 type Props = {
   onSubmit: () => void;
@@ -23,7 +24,7 @@ type Props = {
 const FilterSection: React.FC<Props> = ({ onSubmit }) => {
 
   const { filter } = useGlobals();
-  const { filters, setFilters } = useQuery();
+  const { keyword, setKeyword, category, filters, setFilters, setProducts } = useQuery();
 
   const updateFilter = (newFilter: FilterType) => {
     const newFilters = [ ...filters ];
@@ -32,10 +33,21 @@ const FilterSection: React.FC<Props> = ({ onSubmit }) => {
     setFilters(newFilters);
   };
 
+  const resetFilters = async () => {
+    setKeyword('');
+    const newFilters: FilterType[] = filters.map((item: FilterType) => {
+      item.value = (item.type === "slider") ? [ item.minimum, item.maximum ] as number[] : [];
+      return item;
+    });
+    setFilters(newFilters);
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, newFilters);
+    setProducts(allProducts);
+  };
+
   return filter ? (
     <div className="w-[227px] border-r border-r-neutral-300 dark:border-r-neutral-500">
       <div className="flex justify-between px-4 pt-4">
-        <Button onClick={() => onSubmit()}>
+        <Button onClick={resetFilters}>
           Reset
         </Button>
         <Button onClick={onSubmit}>
