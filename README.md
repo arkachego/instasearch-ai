@@ -1,6 +1,6 @@
 # InstaSearch AI
 
-This Next.js module is the deliverable for the assignment provided by Instinctive Studio for the Full Stack MERN Developer role.
+This Next.js module is the deliverable of the assignment provided by Instinctive Studio for the Full Stack MERN Developer role.
 
 ### Configuration Steps
 
