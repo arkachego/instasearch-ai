@@ -51,7 +51,7 @@ npm run db:seed
 npm run dev
 ```
 
-7. App should be running at [https://localhost:3000](https://localhost:3000). Press `Ctrl/Cmd + X` to stop the module.
+7. App should be running at [http://localhost:3000](http://localhost:3000). Press `Ctrl/Cmd + X` to stop the module.
 
 8. Stop the **MongoDB** docker container.
 
