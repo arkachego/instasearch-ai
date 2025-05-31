@@ -25,7 +25,7 @@ const FilterSection: React.FC = () => {
   };
 
   return filter ? (
-    <ScrollArea className="w-[300px] h-[calc(100vh-69px)] border-r border-r-neutral-300 dark:border-r-neutral-500">
+    <ScrollArea className="w-[300px] shrink-0 h-[calc(100vh-69px)] border-r border-r-neutral-300 dark:border-r-neutral-500">
       <div
         className="flex flex-col gap-6 px-8 pt-4 pb-8"
       >

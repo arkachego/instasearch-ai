@@ -1,11 +1,17 @@
 'use client';
 
 // Libraries
-import { IconMoon, IconSun, IconFilterOff, IconFilter, IconRefresh, IconSearch } from "@tabler/icons-react";
+import {
+  IconMoon,
+  IconSun,
+  IconFilterOff,
+  IconFilter,
+  IconRefresh,
+  IconSearch,
+} from "@tabler/icons-react";
 
 // Components
 import { Button } from "@/components/ui/button";
-import CategoryInput from "@/components/inputs/CategoryInput";
 import SearchInput from "@/components/inputs/SearchInput";
 
 // Hooks
@@ -43,12 +49,12 @@ const HeaderSection: React.FC<Props> = ({ onFilter, onReset }) => {
           setKeyword={setKeyword}
           onSubmit={onFilter}
         />
-        <Button onClick={onFilter}>
+        <Button className="w-[36px] md:w-[100px]" onClick={onFilter}>
           <IconSearch/>
-          Search
+          <span className="px-1 hidden md:block">Search</span>
         </Button>
       </div>
-      <div className="flex gap-4">
+      <div className="hidden md:flex gap-4">
         <Button variant="secondary" className="w-[36px]" onClick={onReset}>
           <IconRefresh/>
         </Button>

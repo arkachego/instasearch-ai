@@ -49,7 +49,7 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
   return (
     <div className="flex-1">
       <ScrollArea className="h-[calc(100vh-138px)]">
-        <Grid className="m-4 max-w-6xl mx-auto">
+        <Grid className="m-4 max-w-6xl mx-auto px-4">
           {products.map((product: ProductType) => (
             <GridItem
               key={product._id}
@@ -60,18 +60,18 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
                 />
               )}
               icon={(
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <div className="flex gap-1">
                     <IconMapPin/>
-                    {product.location}
+                    <span className="pt-[1px] text-sm">{product.location}</span>
                   </div>
                   <div className="flex gap-1">
                     <IconCurrencyRupee/>
-                    {product.price}
+                    <span className="pt-[1px] text-sm">{product.price}</span>
                   </div>
                 </div>
               )}
-              title={product.title}
+              title={<span className="text-sm">{product.title}</span>}
               description={(
                 <div>
                   <div className="mb-4">{product.description}</div>
@@ -91,30 +91,33 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
       <div className="p-4 flex justify-between items-center border-t border-t-neutral-300 dark:border-t-neutral-500">
         <div>
           <Select value={stringItem} onValueChange={(newValue: string) => onItem(parseInt(newValue))}>
-            <SelectTrigger className="w-[154px]">
+            <SelectTrigger className="w-[120px]">
               <SelectValue placeholder="Theme" />
             </SelectTrigger>
             <SelectContent>
               {[ 20,  50, 100 ].map((items: number) => (
-                <SelectItem value={items.toString()}>{items} items/page</SelectItem>
+                <SelectItem value={items.toString()}>{items} / page</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div>Showing {boundary[0]}-{boundary[1]} of {count} products</div>
-        <div className="flex gap-4 items-center">
-          {page === 1 ? <div/> : (
-            <Button onClick={() => onPage(page - 1)}>
-              <IconChevronLeft/>
-              Last
-            </Button>
-          )}
-          {page * item >= count ? <div/> : (
-            <Button onClick={() => onPage(page + 1)}>
-              Next
-              <IconChevronRight/>
-            </Button>
-          )}
+        <div className="flex">
+          <span className="pr-1 hidden md:block">Showing</span>
+          <span>{boundary[0]}-{boundary[1]}</span>
+          <span className="px-1 hidden md:block">of</span>
+          <span className="px-1 block md:hidden">/</span>
+          <span>{count}</span>
+          <span className="pl-1 hidden md:block">products</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Button disabled={page === 1} className="w-[36px] md:w-[82px]" onClick={() => onPage(page - 1)}>
+            <IconChevronLeft/>
+            <span className="px-1 hidden md:block">Last</span>
+          </Button>
+          <Button disabled={page * item >= count} className="w-[36px] md:w-[82px]" onClick={() => onPage(page + 1)}>
+            <span className="px-1 hidden md:block">Next</span>
+            <IconChevronRight/>
+          </Button>
         </div>
       </div>
     </div>
