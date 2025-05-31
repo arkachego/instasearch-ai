@@ -23,6 +23,7 @@ import { useQuery } from "@/hooks/useQuery";
 // Types
 import { ProductType } from "@/types/ProductType";
 import { Button } from "../ui/button";
+import { useEffect, useState } from "react";
 
 type Props = {
   onPage: (newPage: number) => void;
@@ -32,6 +33,15 @@ type Props = {
 const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
 
   const { products, count, page, item } = useQuery();
+  const [ boundary, setBoundary ] = useState<number[]>([ 0, 0 ]);
+
+  useEffect(() => {
+    const isLastPage = count <= page * item;
+    setBoundary([
+      ((page - 1) * item) + 1,
+      isLastPage ? count : page * item,
+    ]);
+  }, [ count, page, item ]);
 
   return (
     <div className="flex-1">
@@ -75,19 +85,22 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
           ))}
         </Grid>
       </ScrollArea>
-      <div className="p-4 flex justify-between border-t border-t-neutral-300 dark:border-t-neutral-500">
-        {page === 1 ? <div/> : (
-          <Button onClick={() => onPage(page - 1)}>
-            <IconChevronLeft/>
-            Last
-          </Button>
-        )}
-        {page * item > count ? <div/> : (
-          <Button onClick={() => onPage(page + 1)}>
-            Next
-            <IconChevronRight/>
-          </Button>
-        )}
+      <div className="p-4 flex justify-between items-center border-t border-t-neutral-300 dark:border-t-neutral-500">
+        <div>Showing {boundary[0]}-{boundary[1]} of {count} products</div>
+        <div className="flex gap-4 items-center">
+          {page === 1 ? <div/> : (
+            <Button onClick={() => onPage(page - 1)}>
+              <IconChevronLeft/>
+              Last
+            </Button>
+          )}
+          {page * item >= count ? <div/> : (
+            <Button onClick={() => onPage(page + 1)}>
+              Next
+              <IconChevronRight/>
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   );
