@@ -2,7 +2,7 @@
 import Listing from '@/models/listing';
 
 // Pipelines
-import { getListingPipeline } from '@/pipelines/SearchPipeline';
+import { getCountPipeline } from '@/pipelines/SearchPipeline';
 
 // Utilities
 import { connect } from '@/lib/db';
@@ -17,15 +17,15 @@ export async function GET(request: Request) {
       price,
       location,
       attributes,
-      page,
-      item,
     } = parseUrlParams(searchParams);
 
     await connect();
-    const pipeline = getListingPipeline(keyword, category, price, location, attributes, page, item);
-    const listings = await Listing.aggregate(pipeline);
+    const pipeline = getCountPipeline(keyword, category, price, location, attributes);
+    const result = await Listing.aggregate(pipeline);
 
-    return new Response(JSON.stringify(listings), {
+    return new Response(JSON.stringify({
+      count: result[0].count,
+    }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

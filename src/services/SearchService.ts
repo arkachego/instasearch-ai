@@ -30,7 +30,7 @@ export const fetchFilters = async (category: string) => {
   }
 };
 
-export const fetchProducts = async (keyword: string, category: string, filters: FilterType[]) => {
+export const fetchCount = async (keyword: string, category: string, filters: FilterType[]) => {
   try {
     const attributes: any = {};
     filters.forEach((filter: FilterType) => {
@@ -38,7 +38,26 @@ export const fetchProducts = async (keyword: string, category: string, filters: 
         attributes[filter.name] = filter.value;
       }
     });
-    const response = await fetch(`${baseURL}/search?q=${keyword}&category=${category}&filters=${JSON.stringify(attributes)}`);
+    const response = await fetch(`${baseURL}/count?q=${keyword}&category=${category}&filters=${JSON.stringify(attributes)}`);
+    const result = await response.json();
+    return result.count as unknown as number;
+  }
+  catch (error) {
+    console.error(error);
+    return [];
+  }
+};
+
+
+export const fetchProducts = async (keyword: string, category: string, filters: FilterType[], page: number, item: number) => {
+  try {
+    const attributes: any = {};
+    filters.forEach((filter: FilterType) => {
+      if (filter.value.length) {
+        attributes[filter.name] = filter.value;
+      }
+    });
+    const response = await fetch(`${baseURL}/search?q=${keyword}&category=${category}&filters=${JSON.stringify(attributes)}&page=${page}&item=${item}`);
     const products = await response.json();
     return products as unknown as ProductType[];
   }

@@ -12,7 +12,7 @@ import ContentSection from "@/components/sections/ContentSection";
 import { useQuery } from "@/hooks/useQuery";
 
 // Services
-import { fetchFilters, fetchProducts } from "@/services/SearchService";
+import { fetchCount, fetchFilters, fetchProducts } from "@/services/SearchService";
 
 // Types
 import { FilterType } from "@/types/FilterType";
@@ -21,9 +21,21 @@ import { ProductType } from "@/types/ProductType";
 const SearchPage: React.FC = () => {
 
   const [ loading, setLoading ] = useState<boolean>(false);
-  const { category, keyword, setKeyword, filters, setFilters, setProducts } = useQuery();
+  const {
+    category,
+    keyword,
+    setKeyword,
+    filters,
+    setFilters,
+    count,
+    setCount,
+    page,
+    setPage,
+    item,
+    setItem,
+    setProducts,
+  } = useQuery();
 
-  // Loading for the first time.
   useEffect(() => {
     if (category) {
       onCategoryChange();
@@ -31,39 +43,73 @@ const SearchPage: React.FC = () => {
   }, [ category ]);
 
   const onCategoryChange = async () => {
-    try {
-      setKeyword('');
-      setFilters([]);
-      const allFilters: FilterType[] = await fetchFilters(category);
-      const allProducts: ProductType[] = await fetchProducts(keyword, category, allFilters);
-      setFilters(allFilters);
-      setProducts(allProducts);
-    }
-    catch (error) {
-      console.error(error);
-    }
+    setKeyword('');
+    setFilters([]);
+    setPage(1);
+
+    const allFilters: FilterType[] = await fetchFilters(category);
+    const totalCount = await fetchCount(keyword, category, allFilters);
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, allFilters, page, item);
+    
+    setFilters(allFilters);
+    setCount(totalCount as number);
+    setProducts(allProducts);
   };
 
-  const updateProducts = async () => {
-    try {
-      const allProducts: any[] = await fetchProducts(keyword, category, filters);
-      setProducts(allProducts);
-    }
-    catch (error) {
-      console.error(error);
-    }
+  const onFilterChange = async () => {
+    setPage(1);
+
+    const totalCount = await fetchCount(keyword, category, filters);
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, filters, 1, item);
+
+    setCount(totalCount as number);
+    setProducts(allProducts);
+  };
+
+  const onFilterReset = async () => {
+    const newFilters: FilterType[] = filters.map((item: FilterType) => {
+      item.value = (item.type === "slider") ? [ item.minimum, item.maximum ] as number[] : [];
+      return item;
+    });
+    setKeyword('');
+    setFilters(newFilters);
+
+    const totalCount = await fetchCount(keyword, category, filters);
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, newFilters, page, item);
+
+    setCount(totalCount as number);
+    setProducts(allProducts);
+  };
+
+  const onPageChange = async (newPage: number) => {
+    setPage(newPage);
+
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, filters, newPage, item);
+    setProducts(allProducts);
+  };
+
+  const onItemChange = async (newItem: number) => {
+    setPage(1);
+    setItem(newItem);
+
+    const allProducts: ProductType[] = await fetchProducts(keyword, category, filters, 1, newItem);
+    setProducts(allProducts);
   };
 
   return (
     <div className="w-full h-full bg-white dark:bg-neutral-700">
       <HeaderSection
-        onSubmit={updateProducts}
+        onFilter={onFilterChange}
       />
       <div className="flex w-full h-[calc(100vh-69px)]">
         <FilterSection
-          onSubmit={updateProducts}
+          onFilter={onFilterChange}
+          onReset={onFilterReset}
         />
-        <ContentSection/>
+        <ContentSection
+          onPage={onPageChange}
+          onItem={onItemChange}
+        />
       </div>
     </div>
   );

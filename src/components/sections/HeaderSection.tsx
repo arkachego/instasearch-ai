@@ -13,10 +13,10 @@ import { useGlobals } from "@/hooks/useGlobals";
 import { useQuery } from "@/hooks/useQuery";
 
 type Props = {
-  onSubmit: () => Promise<void>;
+  onFilter: () => Promise<void>;
 };
 
-const HeaderSection: React.FC<Props> = ({ onSubmit }) => {
+const HeaderSection: React.FC<Props> = ({ onFilter }) => {
 
   const {
     theme,
@@ -29,8 +29,6 @@ const HeaderSection: React.FC<Props> = ({ onSubmit }) => {
     setKeyword,
     category,
     setCategory,
-    filters,
-    setProducts,
   } = useQuery();
 
   return (
@@ -47,7 +45,7 @@ const HeaderSection: React.FC<Props> = ({ onSubmit }) => {
           <SearchInput
             keyword={keyword}
             setKeyword={setKeyword}
-            onSubmit={onSubmit}
+            onSubmit={onFilter}
           />
         </div>
       </div>

@@ -1,6 +1,125 @@
 import { FilterType } from "@/types/FilterType";
 import { PipelineStage } from "mongoose";
 
+const getSearchPipeline: (
+  keyword: string,
+  category: string,
+  price: number[],
+  location: string[],
+  attributes: FilterType[],
+) => PipelineStage[] = (
+  keyword,
+  category,
+  price,
+  location,
+  attributes,
+) => {
+  let pipeline: PipelineStage[] = [];
+  if (keyword) {
+    pipeline = pipeline.concat([
+      {
+        $match: {
+          $text: { $search: keyword }
+        }
+      },
+      {
+        $addFields: {
+          score: { $meta: 'textScore' }
+        }
+      },
+    ]);
+  }
+  const firstConditions: any[] = [
+    { $eq: [ "$category.slug", category ] },
+    { $gte: [ "$price", price[0] ] },
+    { $lte: [ "$price", price[1] ] },
+  ];
+  if (location) {
+    firstConditions.push({
+      $in: [ "$location", location ]
+    });
+  }
+  pipeline = pipeline.concat([
+    {
+      $lookup: {
+        from: 'categories',
+        localField: 'categoryId',
+        foreignField: '_id',
+        as: 'category',
+      },
+    },
+    {
+      $unwind: '$category',
+    },
+    {
+      $match: {
+        $expr: {
+          $and: firstConditions,
+        },
+      },
+    },
+  ]);
+  const secondConditions: any = Object.entries(attributes).map(([key, values]) => ({
+    attributes: {
+      $elemMatch: {
+        key,
+        value: { $in: values },
+      },
+    },
+  }));
+  if (secondConditions.length) {
+    pipeline = pipeline.concat([
+      {
+        $match: {
+          $and: secondConditions,
+        },
+      },
+    ]);
+  }
+  return pipeline;
+};
+
+export const getCountPipeline: (
+  keyword: string,
+  category: string,
+  price: number[],
+  location: string[],
+  attributes: FilterType[],
+) => PipelineStage[] = (
+  keyword,
+  category,
+  price,
+  location,
+  attributes,
+) => {
+
+  let pipeline = getSearchPipeline(
+    keyword,
+    category,
+    price,
+    location,
+    attributes,
+  );
+
+  pipeline = pipeline.concat([
+    {
+      $addFields: {
+        itemCount: 1,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        count: {
+          $sum: '$itemCount',
+        },
+      },
+    },
+  ]);
+  return pipeline;
+};
+
+
 export const getFilterPipeline: (category: string) => PipelineStage[] = (category: string) => {
   return [
     {
@@ -158,82 +277,44 @@ export const getFilterPipeline: (category: string) => PipelineStage[] = (categor
   ] as PipelineStage[];
 };
 
-export const getProductPipeline: (
-  keyword: string,
-  category: string,
-  price: number[],
-  location: string[],
-  attributes: FilterType[]
-) => PipelineStage[] = (
+export const getListingPipeline: (
   keyword: string,
   category: string,
   price: number[],
   location: string[],
   attributes: FilterType[],
+  page: number,
+  item: number,
+) => PipelineStage[] = (
+  keyword,
+  category,
+  price,
+  location,
+  attributes,
+  page,
+  item,
 ) => {
-  let pipeline: any[] = [];
-  if (keyword) {
-    pipeline = pipeline.concat([
-      {
-        $match: {
-          $text: { $search: keyword }
-        }
-      },
-      {
-        $addFields: {
-          score: { $meta: 'textScore' }
-        }
-      },
-    ]);
-  }
-  const firstConditions: any[] = [
-    { $eq: [ "$category.slug", category ] },
-    { $gte: [ "$price", price[0] ] },
-    { $lte: [ "$price", price[1] ] },
-  ];
-  if (location) {
-    firstConditions.push({
-      $in: [ "$location", location ]
-    });
-  }
+
+  let pipeline = getSearchPipeline(
+    keyword,
+    category,
+    price,
+    location,
+    attributes,
+  );
+
   pipeline = pipeline.concat([
     {
-      $lookup: {
-        from: 'categories',
-        localField: 'categoryId',
-        foreignField: '_id',
-        as: 'category',
+      $sort: {
+        score: -1,
       },
     },
     {
-      $unwind: '$category',
+      $skip: (page - 1) * item,
     },
     {
-      $match: {
-        $expr: {
-          $and: firstConditions,
-        },
-      },
+      $limit: item,
     },
-  ]);
-  const secondConditions: any = Object.entries(attributes).map(([key, values]) => ({
-    attributes: {
-      $elemMatch: {
-        key,
-        value: { $in: values },
-      },
-    },
-  }));
-  if (secondConditions.length) {
-    pipeline = pipeline.concat([
-      {
-        $match: {
-          $and: secondConditions,
-        },
-      },
-    ]);
-  }
-  pipeline = pipeline.concat([
     {
       $project: {
         category: 0,

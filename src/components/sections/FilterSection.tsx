@@ -1,13 +1,7 @@
-// Libraries
-import { useEffect } from "react";
-
 // Components
 import { Button } from "@/components/ui/button";
 import SliderInput from "@/components/inputs/SliderInput";
 import CheckInput from "@/components/inputs/CheckInput";
-
-// Services
-import { fetchFilters, fetchProducts } from "@/services/SearchService";
 
 // Hooks
 import { useGlobals } from "@/hooks/useGlobals";
@@ -15,16 +9,16 @@ import { useQuery } from "@/hooks/useQuery";
 
 // Types
 import { FilterType } from "@/types/FilterType";
-import { ProductType } from "@/types/ProductType";
 
 type Props = {
-  onSubmit: () => void;
+  onFilter: () => void;
+  onReset: () => void;
 };
 
-const FilterSection: React.FC<Props> = ({ onSubmit }) => {
+const FilterSection: React.FC<Props> = ({ onFilter, onReset }) => {
 
   const { filter } = useGlobals();
-  const { keyword, setKeyword, category, filters, setFilters, setProducts } = useQuery();
+  const { filters, setFilters } = useQuery();
 
   const updateFilter = (newFilter: FilterType) => {
     const newFilters = [ ...filters ];
@@ -33,24 +27,13 @@ const FilterSection: React.FC<Props> = ({ onSubmit }) => {
     setFilters(newFilters);
   };
 
-  const resetFilters = async () => {
-    setKeyword('');
-    const newFilters: FilterType[] = filters.map((item: FilterType) => {
-      item.value = (item.type === "slider") ? [ item.minimum, item.maximum ] as number[] : [];
-      return item;
-    });
-    setFilters(newFilters);
-    const allProducts: ProductType[] = await fetchProducts(keyword, category, newFilters);
-    setProducts(allProducts);
-  };
-
   return filter ? (
     <div className="w-[227px] border-r border-r-neutral-300 dark:border-r-neutral-500">
-      <div className="flex justify-between px-4 pt-4">
-        <Button onClick={resetFilters}>
+      <div className="flex justify-between gap-4 px-4 pt-4">
+        <Button variant="outline" className="flex-1" onClick={onReset}>
           Reset
         </Button>
-        <Button onClick={onSubmit}>
+        <Button className="flex-1" onClick={onFilter}>
           Search
         </Button>
       </div>
