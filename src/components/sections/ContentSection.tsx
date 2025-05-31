@@ -8,14 +8,12 @@ import { Grid, GridItem } from "@/components/ui/grid";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Hooks
 import { useQuery } from "@/hooks/useQuery";
@@ -34,6 +32,7 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
 
   const { products, count, page, item } = useQuery();
   const [ boundary, setBoundary ] = useState<number[]>([ 0, 0 ]);
+  const [ stringItem, setStringItem ] = useState<string>('');
 
   useEffect(() => {
     const isLastPage = count <= page * item;
@@ -42,6 +41,10 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
       isLastPage ? count : page * item,
     ]);
   }, [ count, page, item ]);
+
+  useEffect(() => {
+    setStringItem(item.toString());
+  }, [ item ]);
 
   return (
     <div className="flex-1">
@@ -86,6 +89,18 @@ const ContentSection: React.FC<Props> = ({ onPage, onItem }) => {
         </Grid>
       </ScrollArea>
       <div className="p-4 flex justify-between items-center border-t border-t-neutral-300 dark:border-t-neutral-500">
+        <div>
+          <Select value={stringItem} onValueChange={(newValue: string) => onItem(parseInt(newValue))}>
+            <SelectTrigger className="w-[154px]">
+              <SelectValue placeholder="Theme" />
+            </SelectTrigger>
+            <SelectContent>
+              {[ 20,  50, 100 ].map((items: number) => (
+                <SelectItem value={items.toString()}>{items} items/page</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
         <div>Showing {boundary[0]}-{boundary[1]} of {count} products</div>
         <div className="flex gap-4 items-center">
           {page === 1 ? <div/> : (
