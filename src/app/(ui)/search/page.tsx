@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import HeaderSection from "@/components/sections/HeaderSection";
 import FilterSection from "@/components/sections/FilterSection";
 import ContentSection from "@/components/sections/ContentSection";
+import FooterSection from "@/components/sections/FooterSection";
 import FloatingButton from "@/components/buttons/FloatingButton";
 
 // Hooks
@@ -23,7 +24,6 @@ import { fetchCount, fetchFilters, fetchProducts } from "@/services/SearchServic
 // Types
 import { FilterType } from "@/types/FilterType";
 import { ProductType } from "@/types/ProductType";
-import FooterSection from "@/components/sections/FooterSection";
 
 const SearchPage: React.FC = () => {
 
