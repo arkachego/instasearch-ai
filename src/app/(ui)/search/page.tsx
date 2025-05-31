@@ -23,6 +23,7 @@ import { fetchCount, fetchFilters, fetchProducts } from "@/services/SearchServic
 // Types
 import { FilterType } from "@/types/FilterType";
 import { ProductType } from "@/types/ProductType";
+import FooterSection from "@/components/sections/FooterSection";
 
 const SearchPage: React.FC = () => {
 
@@ -120,10 +121,13 @@ const SearchPage: React.FC = () => {
         />
         <div className="flex w-full h-[calc(100vh-69px)]">
           <FilterSection/>
-          <ContentSection
-            onPage={onPageChange}
-            onItem={onItemChange}
-          />
+          <div className="flex-1">
+            <ContentSection/>
+            <FooterSection
+              onPage={onPageChange}
+              onItem={onItemChange}
+            />
+          </div>
         </div>
       </div>
       <FloatingButton
